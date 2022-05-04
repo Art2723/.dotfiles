@@ -1,0 +1,48 @@
+# Lines configured by zsh-newuser-install
+HISTFILE=~/.histfile
+HISTSIZE=1000
+SAVEHIST=10000
+bindkey -v
+# End of lines configured by zsh-newuser-install
+# The following lines were added by compinstall
+zstyle :compinstall filename '/home/artem/.zshrc'
+
+autoload -Uz compinit
+compinit
+# End of lines added by compinstall
+
+# from bash_profile
+export PATH="$PATH:/opt/mssql-tools/bin"
+export PATH="$HOME/.poetry/bin:$PATH"
+export PATH=$PATH:/home/artem/.local/bin
+
+# from bashrc
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/artem/anaconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/artem/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/artem/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/artem/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
+# Alias definitions.
+# You may want to put all your additions into a separate file like
+# ~/.bash_aliases, instead of adding them here directly.
+# See /usr/share/doc/bash-doc/examples in the bash-doc package.
+
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+
+
