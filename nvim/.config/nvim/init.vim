@@ -20,6 +20,7 @@ set signcolumn=yes
 set undodir=~/.config/nvim/undodir
 set undofile
 set smartcase
+set hidden
 "set splitbelow
 "set splitright
 "set spell spelllang=en_us
@@ -34,8 +35,11 @@ inoremap jj <esc>
 let mapleader=" "
 
 " C-c and C-v - Copy/Paste to global clipboard
-noremap <C-c> "+y
-noremap  <C-v> "+p
+vnoremap <C-c> "+y
+noremap  <C-S-v> "+p
+
+" when insert register stays the same
+xnoremap <Leader>p "_dP
 
 " terminal mode
 " make ESC work
@@ -44,6 +48,9 @@ noremap  <C-v> "+p
 " make Tab and S-Tab work in normal mode
 nnoremap <Tab> >>
 nnoremap <S-Tab> <<
+
+" jump buffers
+nnoremap <Leader><Tab> :bn<CR>
 
 " save file and close
 nnoremap zz :wq<Enter>	
@@ -55,10 +62,10 @@ map <Enter> o<ESC>
 map <S-Enter> O<ESC>
 
 " nerd-tree shortcuts
-"nnoremap <leader>n :NERDTreeFocus<CR>
-"nnoremap <C-n> :NERDTree<CR>
-"nnoremap <C-t> :NERDTreeToggle<CR>
-"nnoremap <C-f> :NERDTreeFind<CR>
+nnoremap <leader>n :NERDTreeFocus<CR>
+nnoremap <C-n> :NERDTree<CR>
+nnoremap <C-t> :NERDTreeToggle<CR>
+nnoremap <C-f> :NERDTreeFind<CR>
 
 " turn off search highlight
 nnoremap <Leader><Esc> :nohlsearch<CR>
@@ -98,7 +105,15 @@ vnoremap [ c[<Esc>par<Esc>
 vnoremap ] c{<Esc>pa}<Esc>
 vnoremap ( c(<Esc>pa)<Esc>
 vnoremap ) c(<Esc>pa)<Esc>
+" jump out paired symbols
+inoremap <C-a> <C-o>a
 
+" Prettier
+" range_formatting in visual mode
+" xmap <Leader>p <Plug>(prettier-format)
+
+" formatting in normal mode
+" nmap <Leader>p <Plug>(prettier-format)
 
 " cmp autocomplite and snippets
 Plug 'HerringtonDarkholme/yats.vim'
@@ -111,11 +126,11 @@ Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
 
 " nerd tree
-"Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/nerdtree'
 
 " nvim tree
-Plug 'kyazdani42/nvim-web-devicons' " for file icons
-Plug 'kyazdani42/nvim-tree.lua'
+" Plug 'kyazdani42/nvim-web-devicons' " for file icons
+" Plug 'kyazdani42/nvim-tree.lua'
 
 " color schemas
 Plug 'morhetz/gruvbox'  " colorscheme gruvbox
@@ -131,6 +146,11 @@ Plug 'jiangmiao/auto-pairs' "this will auto close ( [ {
 " For JS/JSX
 Plug 'yuezk/vim-js'
 Plug 'maxmellon/vim-jsx-pretty'
+
+" Prettier
+Plug 'neovim/nvim-lspconfig'
+Plug 'jose-elias-alvarez/null-ls.nvim'
+Plug 'MunifTanjim/prettier.nvim'
 
 " telescope
 Plug 'nvim-lua/plenary.nvim'
@@ -148,23 +168,23 @@ Plug 'terrortylor/nvim-comment'
 
 call plug#end()
 "------------------------------NVIM TREE------------------------
-let g:nvim_tree_git_hl = 1 "0 by default, will enable file highlight for git attributes (can be used without the icons).
-let g:nvim_tree_highlight_opened_files = 1 "0 by default, will enable folder and file icon highlight for opened files/directories.
-let g:nvim_tree_root_folder_modifier = ':~' "This is the default. See :help filename-modifiers for more options
-let g:nvim_tree_add_trailing = 1 "0 by default, append a trailing slash to folder names
-let g:nvim_tree_group_empty = 1 " 0 by default, compact folders that only contain a single folder into one node in the file tree
-let g:nvim_tree_icon_padding = ' ' "one space by default, used for rendering the space between the icon and the filename. Use with caution, it could break rendering if you set an empty string depending on your font.
-let g:nvim_tree_symlink_arrow = ' >> ' " defaults to ' ➛ '. used as a separator between symlinks' source and target.
-let g:nvim_tree_respect_buf_cwd = 1 "0 by default, will change cwd of nvim-tree to that of new buffer's when opening nvim-tree.
-let g:nvim_tree_create_in_closed_folder = 1 "0 by default, When creating files, sets the path of a file when cursor is on a closed folder to the parent folder when 0, and inside the folder when 1.
-let g:nvim_tree_special_files = { 'README.md': 1, 'Makefile': 1, 'MAKEFILE': 1 } " List of filenames that gets highlighted with NvimTreeSpecialFile
-let g:nvim_tree_show_icons = {
-    \ 'git': 1,
-    \ 'folders': 0,
-    \ 'files': 0,
-    \ 'folder_arrows': 0,
-    \ }
-"If 0, do not show the icons for one of 'git' 'folder' and 'files'
+" let g:nvim_tree_git_hl = 1 "0 by default, will enable file highlight for git attributes (can be used without the icons).
+" let g:nvim_tree_highlight_opened_files = 1 "0 by default, will enable folder and file icon highlight for opened files/directories.
+" let g:nvim_tree_root_folder_modifier = ':~' "This is the default. See :help filename-modifiers for more options
+" let g:nvim_tree_add_trailing = 1 "0 by default, append a trailing slash to folder names
+" let g:nvim_tree_group_empty = 1 " 0 by default, compact folders that only contain a single folder into one node in the file tree
+" let g:nvim_tree_icon_padding = ' ' "one space by default, used for rendering the space between the icon and the filename. Use with caution, it could break rendering if you set an empty string depending on your font.
+" let g:nvim_tree_symlink_arrow = ' >> ' " defaults to ' ➛ '. used as a separator between symlinks' source and target.
+" let g:nvim_tree_respect_buf_cwd = 1 "0 by default, will change cwd of nvim-tree to that of new buffer's when opening nvim-tree.
+" let g:nvim_tree_create_in_closed_folder = 1 "0 by default, When creating files, sets the path of a file when cursor is on a closed folder to the parent folder when 0, and inside the folder when 1.
+" let g:nvim_tree_special_files = { 'README.md': 1, 'Makefile': 1, 'MAKEFILE': 1 } " List of filenames that gets highlighted with NvimTreeSpecialFile
+" let g:nvim_tree_show_icons = {
+"     \ 'git': 1,
+"     \ 'folders': 0,
+"     \ 'files': 0,
+"     \ 'folder_arrows': 0,
+"     \ }
+" "If 0, do not show the icons for one of 'git' 'folder' and 'files'
 "1 by default, notice that if 'files' is 1, it will only display
 "if nvim-web-devicons is installed and on your runtimepath.
 "if folder is 1, you can also tell folder_arrows 1 to show small arrows next to the folder icons.
@@ -172,34 +192,34 @@ let g:nvim_tree_show_icons = {
 
 " default will show icon by default if no icon is provided
 " default shows no icon by default
-let g:nvim_tree_icons = {
-    \ 'default': "",
-    \ 'symlink': "",
-    \ 'git': {
-    \   'unstaged': "✗",
-    \   'staged': "✓",
-    \   'unmerged': "",
-    \   'renamed': "➜",
-    \   'untracked': "★",
-    \   'deleted': "",
-    \   'ignored': "◌"
-    \   },
-    \ 'folder': {
-    \   'arrow_open': "",
-    \   'arrow_closed': "",
-    \   'default': "",
-    \   'open': "",
-    \   'empty': "",
-    \   'empty_open': "",
-    \   'symlink': "",
-    \   'symlink_open': "",
-    \   }
-    \ }
-
-nnoremap <C-n> :NvimTreeToggle<CR>
-nnoremap <leader>r :NvimTreeRefresh<CR>
-nnoremap <leader>n :NvimTreeFindFile<CR>
-" More available functions:
+" let g:nvim_tree_icons = {
+"     \ 'default': "",
+"     \ 'symlink': "",
+"     \ 'git': {
+"     \   'unstaged': "✗",
+"     \   'staged': "✓",
+"     \   'unmerged': "",
+"     \   'renamed': "➜",
+"     \   'untracked': "★",
+"     \   'deleted': "",
+"     \   'ignored': "◌"
+"     \   },
+"     \ 'folder': {
+"     \   'arrow_open': "",
+"     \   'arrow_closed': "",
+"     \   'default': "",
+"     \   'open': "",
+"     \   'empty': "",
+"     \   'empty_open': "",
+"     \   'symlink': "",
+"     \   'symlink_open': "",
+"     \   }
+"     \ }
+"
+" nnoremap <C-n> :NvimTreeToggle<CR>
+" nnoremap <leader>r :NvimTreeRefresh<CR>
+" nnoremap <leader>n :NvimTreeFindFile<CR>
+" " More available functions:
 " NvimTreeOpen
 " NvimTreeClose
 " NvimTreeFocus
@@ -211,7 +231,7 @@ nnoremap <leader>n :NvimTreeFindFile<CR>
 " set termguicolors " this variable must be enabled for colors to be applied properly
 
 " a list of groups can be found at `:help nvim_tree_highlight`
-highlight NvimTreeFolderIcon guibg=blue
+" highlight NvimTreeFolderIcon guibg=blue
 "---------------------------END NVIM TREE-----------------------
 "
 "
@@ -220,8 +240,10 @@ highlight NvimTreeFolderIcon guibg=blue
 lua require('myplugs.telescope')
 "lua require('telescope').setup{}
 lua require('myplugs.emmet-ls')
+lua require('myplugs.prettier')
+" lua require("prettier").setup()
 "lua require'nvim-tree'.setup {}
-lua require('myplugs.nvim-tree')
+" lua require('myplugs.nvim-tree')
 lua require('nvim_comment').setup()
 "lua require("bufferline").setup{}
 " colorscheme --------------------------
@@ -241,10 +263,10 @@ lua require('luasnip').filetype_extend("javascriptreact", { "javascript" })
 lua require('luasnip').filetype_extend("javascriptreact", { "html" })
 lua require('luasnip').filetype_extend("javascript", { "html" })
 lua require("luasnip.loaders.from_vscode").lazy_load()
-
+lua require'lspconfig'.elmls.setup{}
 lua << EOF
 -- Set completeopt to have a better completion experience
-vim.o.completeopt = 'menuone,noselect'
+--vim.o.completeopt = 'menuone,noselect'
 
 -- luasnip setup
 local luasnip = require 'luasnip'
@@ -252,9 +274,9 @@ local luasnip = require 'luasnip'
 -- nvim-cmp setup
 local cmp = require 'cmp'
 cmp.setup ({
-  completion = {
-    autocomplete = true
-  },
+--  completion = {
+--    autocomplete = true
+--  },
   snippet = {
     expand = function(args)
       require('luasnip').lsp_expand(args.body)
@@ -269,10 +291,11 @@ cmp.setup ({
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete(),
     ['<C-e>'] = cmp.mapping.close(),
-    ['<CR>'] = cmp.mapping.confirm {
-      behavior = cmp.ConfirmBehavior.Replace,
-      select = true,
-    },
+--    ['<CR>'] = cmp.mapping.confirm {
+--      behavior = cmp.ConfirmBehavior.Replace,
+--      select = true,
+--    },
+    ['<CR>'] = cmp.mapping.confirm({ select = false }),
 --    ['<Tab>'] = function(fallback)
 --      if vim.fn.pumvisible() == 1 then
  --       vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<C-n>', true, true, true), 'n')
@@ -304,8 +327,14 @@ cmp.setup ({
 })
 EOF
 
-
-
+" let g:LanguageClient_serverCommands = {
+"   \ 'elm': ['elm-language-server'],
+"   \ }
+"
+" let g:LanguageClient_rootMarkers = {
+"   \ 'elm': ['elm.json'],
+"   \ }
+"
 
 lua << EOF
 local nvim_lsp = require('lspconfig')
@@ -344,9 +373,10 @@ local on_attach = function(client, bufnr)
 
 end
 
+
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
-local servers = { 'pyright', 'tsserver', 'html', 'emmet_ls', 'cssls', 'eslint' }
+local servers = { 'pyright', 'tsserver', 'html', 'emmet_ls', 'cssls', 'eslint', 'elmls' }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {
     on_attach = on_attach,
@@ -442,3 +472,6 @@ map gw :Bclose<cr>
 " run current script with python3 by CTRL+R in command and insert mode
 autocmd FileType python map <buffer> <C-r> :w<CR>:exec '!python3' shellescape(@%, 1)<CR>
 autocmd FileType python imap <buffer> <C-r> <esc>:w<CR>:exec '!python3' shellescape(@%, 1)<CR>
+
+
+

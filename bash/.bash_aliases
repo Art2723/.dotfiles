@@ -12,6 +12,7 @@ alias l='ls -CF'
 alias xclip='xclip -selection clipboard -in'
 alias wgup='sudo wg-quick up /etc/wireguard/blackbox_wb.conf'
 alias wgdown='sudo wg-quick down /etc/wireguard/blackbox_wb.conf'
+alias fastapi='source /home/artem/.local/share/virtualenvs/FastAPI-GxuYjeO1/bin/activate'
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
