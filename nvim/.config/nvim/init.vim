@@ -106,7 +106,12 @@ vnoremap ] c{<Esc>pa}<Esc>
 vnoremap ( c(<Esc>pa)<Esc>
 vnoremap ) c(<Esc>pa)<Esc>
 " jump out paired symbols
-inoremap <C-a> <C-o>a
+" inoremap <C-a> <C-o>a
+inoremap <C-a> <Esc>wa
+
+" In the quickfix window, <CR> is used to jump to the error under the
+" cursor, so undefine the mapping there.
+autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
 
 " Prettier
 " range_formatting in visual mode
